@@ -3,6 +3,7 @@
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { findTimeZone, getZonedTime, listTimeZones, getUnixTime} from 'timezone-support';
+import colors from 'yoctocolors';
 
 const rl = readline.createInterface({ input, output }); 
 const timezones = listTimeZones();
@@ -41,7 +42,7 @@ let timezoneObj = {
             }
         }
         if (missingData.length > 0) {
-            console.log(`You are still missing ${missingData.length} items: ` );
+            console.log(colors.red(`You are still missing ${colors.yellow(missingData.length)} items: ` ));
             for (let item of missingData) {
                 console.log(item);
             }
@@ -63,19 +64,20 @@ let timezoneObj = {
         // convert origin timezone to unix time, then convert unix time to target timezone
         let unixTime = getUnixTime(originTime, this.originTimezone);
         let targetTime = getZonedTime(unixTime, this.targetTimezone);
-        console.log(`Date: ${targetTime.day}/${targetTime.month}/${targetTime.year}\nTime: ${targetTime.hours}:${this.minutes}`);
+        console.log(`${colors.bold("Date:")} ${targetTime.day}/${targetTime.month}/${targetTime.year}`);
+        console.log(`${colors.bold("Time:")} ${targetTime.hours}:${this.minutes}`);
     }
 }
 
 // needs to be async/await because otherwise code will continue while waiting for question to resolve, since that is an async method
 async function displayOptions() {
-    console.log("Press 0 to exit");
-    console.log("Press 1 to list all available timezones");
-    console.log("Press 2 to enter the target timezone");
-    console.log("Press 3 to enter the timezone of origin");
-    console.log("Press 4 to enter the date and time");
-    console.log("Press 5 to convert the time");
-    console.log("Press 6 to log object properties");
+    console.log(`Press ${colors.yellow("0")} to exit`);
+    console.log(`Press ${colors.yellow("1")} to list all available timezones`);
+    console.log(`Press ${colors.yellow("2")} to enter the target timezone`);
+    console.log(`Press ${colors.yellow("3")} to enter the timezone of origin`);
+    console.log(`Press ${colors.yellow("4")} to enter the date and time`);
+    console.log(`Press ${colors.yellow("5")} to convert the time`);
+    console.log(`Press ${colors.yellow("6")} to log object properties(dev testing)`);
     userInput = await rl.question("Pick an option: ");
 
     await handleInput(userInput);
@@ -100,14 +102,14 @@ async function handleInput(input) {
             if (checkDateValidity(newDate)) {
                 timezoneObj.addDate(newDate);
             } else {
-                console.log("Invalid date, please try again");
+                console.log(colors.red("Invalid date, please try again"));
                 break;
             }
             let newTime = await rl.question("Enter the time (hh:mm): ");
             if (checkTimeValidity(newTime)) {
                 timezoneObj.addTime(newTime);
             } else {
-                console.log("Invalid time, please try again");
+                console.log(colors.red("Invalid time, please try again"));
                 break;
             }
             break;
