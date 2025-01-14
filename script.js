@@ -29,6 +29,8 @@ let timezoneObj = {
         let timeArr = time.split(":");
         timezoneObj.hours = timeArr[0].length === 2 ? timeArr[0] : `0${timeArr[0]}`;
         timezoneObj.minutes = timeArr[1].length === 2 ? timeArr[1] : `0${timeArr[1]}`;
+        console.log(this.hours);
+        console.log(this.minutes);
     },
     checkData() {
         // check if user entered all necessary data
@@ -141,12 +143,13 @@ function checkDateValidity(date) {
         if (year < 0) {
             return false;
         }
-        // check for leap year
-        if (year % 100 === 0) {
-            if (year % 400 === 0) {
-                leap = 1;
+        // check for leap year (https://learn.microsoft.com/en-us/office/troubleshoot/excel/determine-a-leap-year)
+        if (year % 4 === 0) {
+            if (year % 100 === 0) {
+                if (year % 400 === 0) {
+                    leap = 1;
+                }
             }
-        } else if (year % 4 === 0) {
             leap = 1;
         }
         if (month < 1 || month > 12) {
@@ -196,8 +199,6 @@ function checkTimeValidity(time) {
         if (minutes < 0 || minutes > 59) {
             return false;
         }
-        console.log(hours);
-        console.log(minutes);
         return true;
     } catch (err) {
         console.log(err);
