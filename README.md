@@ -1,4 +1,4 @@
 --TODO  
 -Refactor  
--Organize layout in CLI  
+-Organize layout in CLI    
 -Fix try/catch  
