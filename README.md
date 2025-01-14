@@ -1,4 +1,4 @@
 --TODO  
 -Refactor  
--Organize layout in CLI
--Add package for text emphasis and/or color
+-Organize layout in CLI  
+-Fix try/catch  
