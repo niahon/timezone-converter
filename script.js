@@ -85,45 +85,51 @@ async function displayOptions() {
 }
 
 async function handleInput(input) {
-    switch (userInput) {
-        case '0':
-            process.exit();
-        case '1':
-            displayTimezones();
-            break;
-        case '2':
-            timezoneObj.targetTimezone = await rl.question("Enter the target timezone: ");
-            break;
-        case '3':
-            timezoneObj.originTimezone = await rl.question("Enter the timezone of origin: ");
-            break;
-        case '4':
-            let newDate = await rl.question("Enter the date (DD/MM/YYYY): ");
-            if (checkDateValidity(newDate)) {
-                timezoneObj.addDate(newDate);
-            } else {
-                console.log(colors.red("Invalid date, please try again"));
+    try {
+        switch (userInput) {
+            case '0':
+                process.exit();
+            case '1':
+                displayTimezones();
                 break;
-            }
-            let newTime = await rl.question("Enter the time (hh:mm): ");
-            if (checkTimeValidity(newTime)) {
-                timezoneObj.addTime(newTime);
-            } else {
-                console.log(colors.red("Invalid time, please try again"));
+            case '2':
+                timezoneObj.targetTimezone = await rl.question("Enter the target timezone: ");
                 break;
-            }
-            break;
-        case '5':
-            if (timezoneObj.checkData()) {
-                timezoneObj.convertTimezone();
-            }
-            break;
-        case '6':
-            for (let key in timezoneObj) {
-                console.log(timezoneObj[key]);
-            } 
-            break;
+            case '3':
+                timezoneObj.originTimezone = await rl.question("Enter the timezone of origin: ");
+                break;
+            case '4':
+                let newDate = await rl.question("Enter the date (DD/MM/YYYY): ");
+                if (checkDateValidity(newDate)) {
+                    timezoneObj.addDate(newDate);
+                } else {
+                    console.log(colors.red("Invalid date, please try again"));
+                    break;
+                }
+                let newTime = await rl.question("Enter the time (hh:mm): ");
+                if (checkTimeValidity(newTime)) {
+                    timezoneObj.addTime(newTime);
+                } else {
+                    console.log(colors.red("Invalid time, please try again"));
+                    break;
+                }
+                break;
+            case '5':
+                if (timezoneObj.checkData()) {
+                    timezoneObj.convertTimezone();
+                }
+                break;
+            case '6':
+                for (let key in timezoneObj) {
+                    console.log(timezoneObj[key]);
+                } 
+                break;
+        }
+    } catch (err) {
+        console.log(err);
+        return;
     }
+    
 }
 
 async function displayTimezones() {
@@ -136,58 +142,53 @@ async function displayTimezones() {
 }
 
 function checkDateValidity(date) {
-    try {
-        let dateArr = date.split("/");
-        let day = +dateArr[0];
-        let month = +dateArr[1];
-        let year = +dateArr[2];
-        let leap = 0;
-        if (year < 0) {
-            return false;
-        }
-        // check for leap year (https://learn.microsoft.com/en-us/office/troubleshoot/excel/determine-a-leap-year)
-        if (year % 4 === 0) {
-            if (year % 100 === 0) {
-                if (year % 400 === 0) {
-                    leap = 1;
-                }
-            }
-            leap = 1;
-        }
-        if (month < 1 || month > 12) {
-            return false;
-        }
-        switch(month) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
-            case 12:
-                if (day < 1 || day > 31) {
-                    return false;
-                }
-                break;
-            case 4:
-            case 6:
-            case 9:
-            case 11:
-                if (day < 1 || day > 30) {
-                    return false;
-                }
-                break
-            case 2:
-                if (day < 1 || day > 28 + leap) {
-                    return false;
-                }
-                break
-        }
-        return true;
-    } catch (err) {
-        console.log(err);
+    let dateArr = date.split("/");
+    let day = +dateArr[0];
+    let month = +dateArr[1];
+    let year = +dateArr[2];
+    let leap = 0;
+    if (year < 0) {
         return false;
     }
+    // check for leap year (https://learn.microsoft.com/en-us/office/troubleshoot/excel/determine-a-leap-year)
+    if (year % 4 === 0) {
+        if (year % 100 === 0) {
+            if (year % 400 === 0) {
+                leap = 1;
+            }
+        }
+        leap = 1;
+    }
+    if (month < 1 || month > 12) {
+        return false;
+    }
+    switch(month) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            if (day < 1 || day > 31) {
+                return false;
+            }
+            break;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+            if (day < 1 || day > 30) {
+                return false;
+            }
+            break
+        case 2:
+            if (day < 1 || day > 28 + leap) {
+                return false;
+            }
+            break
+    }
+    return true;
 }
 
 function checkTimeValidity(time) {
